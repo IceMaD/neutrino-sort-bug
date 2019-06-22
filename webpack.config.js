@@ -3,4 +3,16 @@
 // Neutrino's inspect feature can be used to view/export the generated configuration.
 const neutrino = require('neutrino');
 
-module.exports = neutrino().webpack();
+const config = neutrino().webpack();
+
+config.module.rules = config.module.rules.map(rule => {
+    if (!rule.use || !rule.use[0].loader.includes('babel')) {
+        return rule;
+    }
+
+    rule.use[0].options.plugins = rule.use[0].options.plugins.reverse();
+
+    return rule;
+});
+
+module.exports = config;
